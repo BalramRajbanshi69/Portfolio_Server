@@ -9,7 +9,7 @@ dbConnect();
 
 //middleware
 app.use(cors({
-    origin:["https://portfolio-server-pmdt.onrender.com","http://localhost:5173"],
+    origin:["https://balramworldprofile.vercel.app","http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true
 
