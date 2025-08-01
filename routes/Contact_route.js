@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
-const Contact = require("../models/Contact_model");
+const { sendEmail } = require("../utils/sendEmail");
+const Contact = require("../models/Contact_model")
 
-
-
-// Contact form submission route with validation
 router.post(
   "/",
   [
@@ -19,9 +17,9 @@ router.post(
       // Validate request
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ 
-          success: false, 
-          errors: errors.array() 
+        return res.status(400).json({
+          success: false,
+          errors: errors.array(),
         });
       }
 
@@ -38,21 +36,27 @@ router.post(
       // Save to database
       await newContact.save();
 
+      // Send email notification
+      await sendEmail({
+        name,
+        email,
+        subject,
+        message,
+      });
+
       res.status(201).json({
         success: true,
         contact: newContact,
-        message: "Contact form submitted successfully!"
+        message: "Contact form submitted successfully!",
       });
-
     } catch (error) {
       console.error("Contact form error:", error);
       res.status(500).json({
         success: false,
-        message: "Internal server error"
+        message: "Internal server error",
       });
     }
   }
 );
 
 module.exports = router;
-
